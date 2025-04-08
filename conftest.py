@@ -3,6 +3,6 @@ import pytest
 from main import BooksCollector
 
 @pytest.fixture
-def book():
+def collector():
     collector = BooksCollector()
     return collector
