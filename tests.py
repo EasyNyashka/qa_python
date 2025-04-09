@@ -17,5 +17,19 @@ class TestBooksCollector:
         collector.add_new_book('Гордость и предубеждение и зомби')
         assert len(collector.books_genre) == 1
 
+# Тесты на второй метод
+    def test_set_book_genre_valid(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.set_book_genre('Домовенок Кузя', 'Мультфильмы')
+        assert collector.get_book_genre('Домовенок Кузя') == 'Мультфильмы'
+
+    def test_set_book_genre_no_book(self, collector):
+        collector.set_book_genre('Домовенок Кузя', 'Мультфильмы')
+        assert 'Домовенок Кузя' not in collector.books_genre
+
+    def test_set_book_genre_invalid_genre(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.set_book_genre('Домовенок Кузя', 'Советские мультфильмы')
+        assert collector.get_book_genre('Домовенок Кузя') == ''
 
 
