@@ -1,7 +1,7 @@
 import pytest
 class TestBooksCollector:
 # Tесты на первый метод
-    @pytest.mark.parametrize('book_name', ['Я','Гордость и предубеждение и зомби', 'В названии книги ровно сорок символов 40'])
+    @pytest.mark.parametrize('book_name', ['Я','Домовенок Кузя', 'В названии книги ровно сорок символов 40'])
     def test_add_new_book_add_one_books(self, collector, book_name):
         collector.add_new_book(book_name)
         assert len(collector.books_genre) == 1
@@ -12,8 +12,8 @@ class TestBooksCollector:
         assert len(collector.books_genre) == 0
 
     def test_add_new_book_add_the_same_book(self, collector):
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.add_new_book('Гордость и предубеждение и зомби')
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_new_book('Домовенок Кузя')
         assert len(collector.books_genre) == 1
 
 # Тесты на второй метод
@@ -45,4 +45,16 @@ class TestBooksCollector:
     def test_get_book_genre_book_nonexists(self, collector):
         assert collector.get_book_genre('Домовенок Кузя') is None
 
+    # Тесты на 4 метод
+    def test_get_books_with_specific_genre_valid_gerne(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_new_book('Золушка')
+        collector.add_new_book('Оно')
+        collector.set_book_genre('Оно', 'Ужасы')
+        collector.set_book_genre('Домовенок Кузя', 'Мультфильмы')
+        collector.set_book_genre('Золушка', 'Мультфильмы')
+        assert collector.get_books_with_specific_genre('Мультфильмы') == ['Домовенок Кузя', 'Золушка']
+        assert collector.get_books_with_specific_genre('Мультфильмы') != ['Оно']
 
+    def test_get_books_with_specific_genre_invalid_gerne(self, collector):
+        assert collector.get_books_with_specific_genre('Советские мультфильмы') == []
