@@ -58,3 +58,14 @@ class TestBooksCollector:
 
     def test_get_books_with_specific_genre_invalid_gerne(self, collector):
         assert collector.get_books_with_specific_genre('Советские мультфильмы') == []
+
+   # Тесты на 5 метод
+    def test_get_books_genre_not_an_empty_dict(self, collector):
+        collector.add_new_book('Золушка')
+        collector.add_new_book('Оно')
+        collector.set_book_genre('Золушка', 'Мультфильмы')
+        collector.set_book_genre('Оно', '')
+        assert collector.get_books_genre() == {'Золушка': 'Мультфильмы', 'Оно':''}
+
+    def test_get_books_genre_empty_dict(self, collector):
+        assert collector.get_books_genre() == {}
