@@ -101,7 +101,19 @@ class TestBooksCollector:
         collector.add_book_in_favorites('Домовенок Кузя')
         assert len(collector.get_list_of_favorites_books()) == 1
 
+# Тесты на 8 метод
+    def test_delete_book_from_favorites_valid(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_book_in_favorites('Домовенок Кузя')
+        assert len(collector.get_list_of_favorites_books()) == 1
+        collector.delete_book_from_favorites('Домовенок Кузя')
+        assert len(collector.get_list_of_favorites_books()) == 0
 
+    def test_delete_book_from_favorites_no_book(self, collector):
+        collector.delete_book_from_favorites('Домовенок Кузя')
+        assert 'Домовенок Кузя' not in collector.get_list_of_favorites_books()
+
+# Ntcns
 
 
 
