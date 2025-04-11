@@ -1,24 +1,129 @@
-from main import BooksCollector
-
-# класс TestBooksCollector объединяет набор тестов, которыми мы покрываем наше приложение BooksCollector
-# обязательно указывать префикс Test
+import pytest
 class TestBooksCollector:
+# Tесты на 1 метод
+    @pytest.mark.parametrize('book_name', ['Я','Домовенок Кузя', 'В названии книги ровно сорок символов 40'])
+    def test_add_new_book_add_one_book(self, collector, book_name):
+        collector.add_new_book(book_name)
+        assert len(collector.books_genre) == 1
 
-    # пример теста:
-    # обязательно указывать префикс test_
-    # дальше идет название метода, который тестируем add_new_book_
-    # затем, что тестируем add_two_books - добавление двух книг
-    def test_add_new_book_add_two_books(self):
-        # создаем экземпляр (объект) класса BooksCollector
-        collector = BooksCollector()
+    @pytest.mark.parametrize('book_name', ['В названии книги ровно сорок один символ ', 'Очень длинное название книги, очень-очень-очень', ''])
+    def test_add_new_book_invalid_name_book(self, collector, book_name):
+        collector.add_new_book(book_name)
+        assert len(collector.books_genre) == 0
 
-        # добавляем две книги
-        collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.add_new_book('Что делать, если ваш кот хочет вас убить')
+    def test_add_new_book_add_the_same_book(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_new_book('Домовенок Кузя')
+        assert len(collector.books_genre) == 1
 
-        # проверяем, что добавилось именно две
-        # словарь books_rating, который нам возвращает метод get_books_rating, имеет длину 2
-        assert len(collector.get_books_rating()) == 2
+# Тесты на 2 метод
+    def test_set_book_genre_valid(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.set_book_genre('Домовенок Кузя', 'Мультфильмы')
+        assert collector.get_book_genre('Домовенок Кузя') == 'Мультфильмы'
 
-    # напиши свои тесты ниже
-    # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
+    def test_set_book_genre_no_book(self, collector):
+        collector.set_book_genre('Домовенок Кузя', 'Мультфильмы')
+        assert 'Домовенок Кузя' not in collector.books_genre
+
+    def test_set_book_genre_invalid_genre(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.set_book_genre('Домовенок Кузя', 'Советские мультфильмы')
+        assert collector.get_book_genre('Домовенок Кузя') == ''
+
+# Тесты на 3 метод
+    def test_get_book_genre_book_exists(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.set_book_genre('Домовенок Кузя', 'Мультфильмы')
+        assert collector.get_book_genre('Домовенок Кузя') == 'Мультфильмы'
+
+    def test_get_book_genre_invalid_genre_book(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.set_book_genre('Домовенок Кузя', 'Мультфильмы')
+        assert collector.get_book_genre('Домовенок Кузя') != 'Детективы'
+
+    def test_get_book_genre_book_nonexists(self, collector):
+        assert collector.get_book_genre('Домовенок Кузя') is None
+
+# Тесты на 4 метод
+    def test_get_books_with_specific_genre_valid_gerne(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_new_book('Золушка')
+        collector.add_new_book('Оно')
+        collector.set_book_genre('Оно', 'Ужасы')
+        collector.set_book_genre('Домовенок Кузя', 'Мультфильмы')
+        collector.set_book_genre('Золушка', 'Мультфильмы')
+        assert collector.get_books_with_specific_genre('Мультфильмы') == ['Домовенок Кузя', 'Золушка']
+        assert collector.get_books_with_specific_genre('Мультфильмы') != ['Оно']
+
+    def test_get_books_with_specific_genre_invalid_gerne(self, collector):
+        assert collector.get_books_with_specific_genre('Советские мультфильмы') == []
+
+# Тесты на 5 метод
+    def test_get_books_genre_not_an_empty_dictionary(self, collector):
+        collector.add_new_book('Золушка')
+        collector.add_new_book('Оно')
+        collector.set_book_genre('Золушка', 'Мультфильмы')
+        collector.set_book_genre('Оно', '')
+        assert collector.get_books_genre() == {'Золушка': 'Мультфильмы', 'Оно':''}
+
+    def test_get_books_genre_empty_dictionary(self, collector):
+        assert collector.get_books_genre() == {}
+
+# Тесты на 6 метод
+    def test_get_books_for_children_no_adult_books(self, collector):
+        collector.add_new_book('Затерянный мир')
+        collector.add_new_book('Домовенок Кузя')
+        collector.set_book_genre('Затерянный мир', 'Фантастика')
+        collector.set_book_genre('Домовенок Кузя', 'Мультфильмы')
+        assert collector.get_books_for_children() == ['Затерянный мир', 'Домовенок Кузя']
+
+    def test_get_books_for_children_with_adult_books(self, collector):
+        collector.add_new_book('Оно')
+        collector.add_new_book('Домовенок Кузя')
+        collector.set_book_genre('Оно', 'Ужасы')
+        collector.set_book_genre('Азазель', 'Детектив')
+        assert collector.get_books_for_children() == []
+
+# Тесты на 7 метод
+    def test_add_book_in_favorites_valid(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_book_in_favorites('Домовенок Кузя')
+        assert collector.get_list_of_favorites_books() == ['Домовенок Кузя']
+
+    def test_add_book_in_favorites_no_book(self, collector):
+        collector.add_book_in_favorites('Домовенок Кузя')
+        assert collector.get_list_of_favorites_books() == []
+
+    def test_add_book_in_favorites_valid(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_book_in_favorites('Домовенок Кузя')
+        collector.add_book_in_favorites('Домовенок Кузя')
+        assert len(collector.get_list_of_favorites_books()) == 1
+
+# Тесты на 8 метод
+    def test_delete_book_from_favorites_valid(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_book_in_favorites('Домовенок Кузя')
+        assert len(collector.get_list_of_favorites_books()) == 1
+        collector.delete_book_from_favorites('Домовенок Кузя')
+        assert len(collector.get_list_of_favorites_books()) == 0
+
+    def test_delete_book_from_favorites_no_book(self, collector):
+        collector.delete_book_from_favorites('Домовенок Кузя')
+        assert 'Домовенок Кузя' not in collector.get_list_of_favorites_books()
+
+# Тесты на 9 метод
+    def test_get_list_of_favorites_books_not_an_empty_list(self,collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_book_in_favorites('Домовенок Кузя')
+        assert collector.get_list_of_favorites_books() == ['Домовенок Кузя']
+
+    def test_get_list_of_favorites_books_empty_list(self, collector):
+        assert collector.get_list_of_favorites_books() == []
+
+
+
+
+
+
