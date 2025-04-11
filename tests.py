@@ -85,6 +85,24 @@ class TestBooksCollector:
         collector.set_book_genre('Азазель', 'Детектив')
         assert collector.get_books_for_children() == []
 
+# Тесты на 7 метод
+    def test_add_book_in_favorites_valid(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_book_in_favorites('Домовенок Кузя')
+        assert collector.get_list_of_favorites_books() == ['Домовенок Кузя']
+
+    def test_add_book_in_favorites_no_book(self, collector):
+        collector.add_book_in_favorites('Домовенок Кузя')
+        assert collector.get_list_of_favorites_books() == []
+
+    def test_add_book_in_favorites_valid(self, collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_book_in_favorites('Домовенок Кузя')
+        collector.add_book_in_favorites('Домовенок Кузя')
+        assert len(collector.get_list_of_favorites_books()) == 1
+
+
+
 
 
 
