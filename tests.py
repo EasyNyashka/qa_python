@@ -1,6 +1,6 @@
 import pytest
 class TestBooksCollector:
-# Tесты на первый метод
+# Tесты на 1 метод
     @pytest.mark.parametrize('book_name', ['Я','Домовенок Кузя', 'В названии книги ровно сорок символов 40'])
     def test_add_new_book_add_one_book(self, collector, book_name):
         collector.add_new_book(book_name)
@@ -16,7 +16,7 @@ class TestBooksCollector:
         collector.add_new_book('Домовенок Кузя')
         assert len(collector.books_genre) == 1
 
-# Тесты на второй метод
+# Тесты на 2 метод
     def test_set_book_genre_valid(self, collector):
         collector.add_new_book('Домовенок Кузя')
         collector.set_book_genre('Домовенок Кузя', 'Мультфильмы')
@@ -113,7 +113,16 @@ class TestBooksCollector:
         collector.delete_book_from_favorites('Домовенок Кузя')
         assert 'Домовенок Кузя' not in collector.get_list_of_favorites_books()
 
-# Ntcns
+# Тесты на 9 метод
+    def test_get_list_of_favorites_books_not_an_empty_list(self,collector):
+        collector.add_new_book('Домовенок Кузя')
+        collector.add_book_in_favorites('Домовенок Кузя')
+        assert collector.get_list_of_favorites_books() == ['Домовенок Кузя']
+
+    def test_get_list_of_favorites_books_empty_list(self, collector):
+        assert collector.get_list_of_favorites_books() == []
+
+
 
 
 
